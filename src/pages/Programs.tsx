@@ -203,7 +203,7 @@ const Programs = () => {
       </section>
 
       {/* Curriculum Overview */}
-      <section className="curriculum-section">
+      <section className="curriculum-section" id="curriculum">
         <div className="section-header">
           <FileText size={40} />
           <h2>Curriculum Overview</h2>
@@ -231,8 +231,11 @@ const Programs = () => {
         </div>
 
         <div className="curriculum-action">
-          <button className="view-curriculum-btn">
-            View Full Curriculum →
+          <button 
+            className="view-curriculum-btn"
+            onClick={() => document.getElementById('curriculum')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            Back to Curriculum Top ↑
           </button>
         </div>
       </section>
