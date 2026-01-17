@@ -274,7 +274,12 @@ const Programs = () => {
       <section className="programs-cta">
         <h2>Ready to Begin Your IT Journey?</h2>
         <p>Join us and become part of the next generation of technology leaders</p>
-        <button className="cta-button">Apply to Programs</button>
+        <button 
+          className="cta-button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          Back to Top ↑
+        </button>
       </section>
     </div>
   );
