@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Laptop, 
@@ -15,34 +15,30 @@ import {
   ChevronRight
 } from 'lucide-react';
 import './Home.css';
+import { announcementService } from '../services/announcementService';
+import type { Announcement } from '../types';
 
 const Home = () => {
   const [activeGallery, setActiveGallery] = useState<string | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const announcements = [
-    {
-      id: 1,
-      date: 'March 15, 2024',
-      title: 'Enrollment Period Extended',
-      description: 'The enrollment period for the upcoming semester has been extended until March 30th. Don\'t miss this opportunity!',
-      type: 'important'
-    },
-    {
-      id: 2,
-      date: 'March 10, 2024',
-      title: 'Tech Hackathon Winners',
-      description: 'Congratulations to Team ByteForce for winning the annual CIT Hackathon! Check out their innovative healthcare app.',
-      type: 'achievement'
-    },
-    {
-      id: 3,
-      date: 'March 5, 2024',
-      title: 'Guest Speaker: AI Ethics',
-      description: 'Join us for an inspiring talk on AI Ethics with Dr. Sarah Chen from Tech Institute this Friday at 2 PM.',
-      type: 'event'
-    }
-  ];
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+        const data = await announcementService.getAll();
+        // Get only the latest 3 announcements
+        setAnnouncements(data.slice(0, 3));
+      } catch (error) {
+        console.error('Error fetching announcements:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnnouncements();
+  }, []);
 
   const galleryCategories = {
     awards: {
@@ -189,16 +185,22 @@ const Home = () => {
           </Link>
         </div>
         <div className="announcements-grid">
-          {announcements.map((item) => (
-            <article key={item.id} className="announcement-card">
-              <div className="announcement-date">
-                <Calendar size={14} />
-                <span>{item.date}</span>
-              </div>
-              <h3>{item.title}</h3>
-              <p>{item.description}</p>
-            </article>
-          ))}
+          {loading ? (
+            <p>Loading announcements...</p>
+          ) : announcements.length === 0 ? (
+            <p>No announcements available at the moment.</p>
+          ) : (
+            announcements.map((item) => (
+              <article key={item.id} className="announcement-card">
+                <div className="announcement-date">
+                  <Calendar size={14} />
+                  <span>{item.date}</span>
+                </div>
+                <h3>{item.title}</h3>
+                <p>{item.content[0]}</p>
+              </article>
+            ))
+          )}
         </div>
       </section>
 
